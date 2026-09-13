@@ -4,7 +4,6 @@ set -e
 # Build a JDBC URL from Railway MySQL variables when DB_URL is not set.
 if [[ -z "${DB_URL}" ]]; then
   if [[ -n "${MYSQL_URL}" ]]; then
-    # Railway gives mysql://user:pass@host:port/db — Spring needs jdbc:mysql://...
     case "${MYSQL_URL}" in
       jdbc:*) export DB_URL="${MYSQL_URL}" ;;
       mysql://*) export DB_URL="jdbc:${MYSQL_URL}" ;;
@@ -24,38 +23,31 @@ fi
 
 if [[ -z "${DB_URL}" ]]; then
   echo "ERROR: No database configured."
-  echo "On Railway: open this service → Variables → Add Variable Reference"
-  echo "and link MYSQLHOST / MYSQLPORT / MYSQLUSER / MYSQLPASSWORD / MYSQLDATABASE"
-  echo "from your MySQL service (or set DB_URL manually)."
+  echo "On Railway: add MYSQLHOST, MYSQLPORT, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE"
+  echo "or set DB_URL / MYSQL_URL on this service."
   exit 1
 fi
 
 echo "Using DB_URL host from: ${DB_URL%%\?*}"
 
-# Wait until MySQL accepts TCP connections.
+# Soft wait only — never crash here. /dev/tcp can fail on some images even when MySQL works.
 HOST="${MYSQLHOST}"
 PORT="${MYSQLPORT:-3306}"
-if [[ -z "${HOST}" && "${DB_URL}" =~ @([^:/]+):([0-9]+) ]]; then
-  HOST="${BASH_REMATCH[1]}"
-  PORT="${BASH_REMATCH[2]}"
-elif [[ -z "${HOST}" && "${DB_URL}" =~ jdbc:mysql://([^:/]+):([0-9]+) ]]; then
+if [[ -z "${HOST}" && "${DB_URL}" =~ jdbc:mysql://([^:/]+):([0-9]+) ]]; then
   HOST="${BASH_REMATCH[1]}"
   PORT="${BASH_REMATCH[2]}"
 fi
 
 if [[ -n "${HOST}" ]]; then
-  echo "Waiting for MySQL at ${HOST}:${PORT}..."
-  for ((i=1; i<=90; i++)); do
+  echo "Waiting briefly for MySQL at ${HOST}:${PORT}..."
+  for ((i=1; i<=30; i++)); do
     if (echo >/dev/tcp/"${HOST}"/"${PORT}") >/dev/null 2>&1; then
-      echo "MySQL is ready."
+      echo "MySQL TCP port is open."
       break
-    fi
-    if [[ "$i" -eq 90 ]]; then
-      echo "ERROR: MySQL at ${HOST}:${PORT} never became reachable."
-      exit 1
     fi
     sleep 2
   done
 fi
 
+echo "Starting Spring Boot..."
 exec java ${JAVA_OPTS} -jar /app/app.jar
