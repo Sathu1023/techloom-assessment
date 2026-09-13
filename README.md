@@ -55,9 +55,9 @@ mvn spring-boot:run
 Environment variables (all have working local defaults):
 | Var | Default |
 |---|---|
-| `DB_URL` | `jdbc:mysql://localhost:3306/pos_db` |
+| `DB_URL` | `jdbc:mysql://localhost:3307/pos_db` |
 | `DB_USERNAME` | `root` |
-| `DB_PASSWORD` | `root` |
+| `DB_PASSWORD` | `` |
 | `PORT` | `8080` |
 | `FRONTEND_URL` | `http://localhost:5173` (CORS allow-list) |
 
