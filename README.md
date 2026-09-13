@@ -1,6 +1,7 @@
 # Techloom.ai Software Engineer Intern — Practical Assessment
 
-**Repository:** `<PASTE_YOUR_GITHUB_REPO_URL_HERE>`
+**Repository:** https://github.com/Sathu1023/techloom-assessment
+
 
 **Live Deployments:**
 - Task 01 (POS Order & Inventory System): `<PASTE_TASK_01_DEPLOYMENT_URL_HERE>`
