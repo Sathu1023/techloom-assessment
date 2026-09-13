@@ -1,0 +1,40 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: pos-order-inventory-system
+
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3307/pos_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 20000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        # Row-level pessimistic locking depends on the underlying DB transaction isolation.
+        # READ_COMMITTED is fine because we take explicit pessimistic write locks where it matters.
+        connection:
+          isolation: 2 # TRANSACTION_READ_COMMITTED
+    open-in-view: false
+
+app:
+  reservation:
+    expiry-minutes: 5
+    sweep-interval-ms: 15000   # how often the expiry sweeper runs
+  payment:
+    # Used only by the mock payment simulator (see MockPaymentGateway)
+    simulate-latency-ms: 800
+
+# Allow the React dev server / deployed frontend to call this API
+cors:
+  allowed-origins: ${FRONTEND_URL:http://localhost:5173}

@@ -1,0 +1,31 @@
+package com.techloom.ecommerce.dto;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+
+import java.math.BigDecimal;
+
+public class ProductDtos {
+
+    public record ProductRequest(
+            @NotBlank String name,
+            String description,
+            @DecimalMin(value = "0.0", inclusive = true) BigDecimal price,
+            String category,
+            String imageUrl,
+            @Min(0) Integer totalStock
+    ) {}
+
+    public record ProductResponse(
+            Long id,
+            String name,
+            String description,
+            BigDecimal price,
+            String category,
+            String imageUrl,
+            Integer totalStock,
+            Integer reservedStock,
+            Integer availableStock
+    ) {}
+}
