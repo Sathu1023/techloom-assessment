@@ -4,7 +4,7 @@
 
 
 **Live Deployments:**
-- Task 01 (POS Order & Inventory System): `<PASTE_TASK_01_DEPLOYMENT_URL_HERE>`
+- Task 01 (POS Order & Inventory System): techloom-assessment-production-1837.up.railway.app
 - Task 02 (E-Commerce Checkout & Payment System): `<PASTE_TASK_02_DEPLOYMENT_URL_HERE>`
 
 ---
