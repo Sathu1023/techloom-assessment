@@ -49,5 +49,13 @@ if [[ -n "${HOST}" ]]; then
   done
 fi
 
+# Never let MySQL's port become the web server port (common Railway mistake).
+if [[ -n "${MYSQLPORT}" && "${PORT}" == "${MYSQLPORT}" ]]; then
+  echo "WARNING: PORT was ${PORT} (same as MYSQLPORT). Using 8080 for the web app."
+  export PORT=8080
+fi
+export PORT="${PORT:-8080}"
+echo "Web server will listen on PORT=${PORT}"
+
 echo "Starting Spring Boot..."
 exec java ${JAVA_OPTS} -jar /app/app.jar
