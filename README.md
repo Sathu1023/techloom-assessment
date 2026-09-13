@@ -93,11 +93,45 @@ npm run dev
 
 ---
 
-## Deployment Notes
+## Railway Deploy Setup (recommended)
 
-- **Backends**: deploy each `backend` folder as a separate service on Render/Railway/Fly.io. Set `DB_URL`/`DB_USERNAME`/`DB_PASSWORD` to point at a managed MySQL instance (PlanetScale, Railway MySQL, AWS RDS, etc.), and `FRONTEND_URL` to the deployed frontend's origin (for CORS).
-- **Frontends**: deploy each `frontend` folder to Vercel/Netlify. Set `VITE_API_URL` to the deployed backend's `/api` base URL (e.g. `https://pos-backend.onrender.com/api`).
-- Run `mvn -N io.takari:maven:wrapper` inside each `backend` folder to generate `mvnw`/`mvnw.cmd` before pushing, so hosts without a pre-installed Maven can still build.
+Each task is **one Docker service** (React UI + Spring Boot API on the same URL). Do **not** deploy `backend/` or `frontend/` alone.
+
+### Account
+Use GitHub **Sathu1023** / email **sathurshika1023@gmail.com** on [railway.app](https://railway.app). Delete any old failed project that was created under a different account.
+
+### Create project
+1. **New Project** → **Empty Project**
+2. Add **MySQL** twice → rename them `pos-mysql` and `ecommerce-mysql`
+3. **Add Service** → **GitHub Repo** → `Sathu1023/techloom-assessment` (connect GitHub if asked)
+
+### Service A — Task 01 (POS)
+| Setting | Value |
+|---|---|
+| Root Directory | `task-01` |
+| Builder | Dockerfile (auto from `railway.json`) |
+| Variables | **Add Variable Reference** from `pos-mysql` (so `MYSQLHOST`, `MYSQLPORT`, `MYSQLUSER`, `MYSQLPASSWORD`, `MYSQLDATABASE` appear) |
+| Networking | **Generate Domain** |
+
+### Service B — Task 02 (Store)
+Same as above, but Root Directory = `task-02`, link MySQL = `ecommerce-mysql`, then **Generate Domain**.
+
+### After deploy
+1. Open each public URL — you should see BookNest UI and seeded books.
+2. Health check: `https://YOUR-DOMAIN/health` → `{"status":"ok"}`
+3. Paste both URLs into the **Live Deployments** section at the top of this README.
+
+### Why deploy usually crashes (and how this repo avoids it)
+| Crash cause | Fix in this repo / on Railway |
+|---|---|
+| Wrong Root Directory (repo root or `backend/`) | Set Root Directory to `task-01` or `task-02` only |
+| MySQL not linked | Add Variable Reference from the MySQL service |
+| App starts before MySQL is ready | `docker-entrypoint.sh` waits for MySQL; Hikari retries forever |
+| Wrong account / no push access | Deploy from GitHub `Sathu1023` after you push |
+| Listening on localhost only | App binds `0.0.0.0` and uses Railway `PORT` |
+
+### Optional separate frontends
+If you prefer split hosting: deploy each `backend` to Railway/Render and each `frontend` to Vercel with `VITE_API_URL=https://your-api/api`, and set `FRONTEND_URL` on the backend for CORS.
 
 ---
 
