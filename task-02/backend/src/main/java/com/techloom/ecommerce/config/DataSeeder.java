@@ -31,6 +31,8 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        int created = 0;
+        int updated = 0;
         for (SeedBook seed : catalog()) {
             Product p = productRepository.findFirstByName(seed.name()).orElseGet(Product::new);
             boolean isNew = p.getId() == null;
@@ -42,9 +44,14 @@ public class DataSeeder implements CommandLineRunner {
             if (isNew) {
                 p.setTotalStock(seed.stock());
                 p.setReservedStock(0);
+                created++;
+            } else {
+                updated++;
             }
             productRepository.save(p);
         }
+        System.out.println("BookNest seeder: catalog ready (" + created + " created, "
+                + updated + " updated, " + productRepository.count() + " total products).");
     }
 
     private static List<SeedBook> catalog() {

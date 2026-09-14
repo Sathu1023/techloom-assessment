@@ -22,11 +22,12 @@ export default function HomePage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch products and paid orders in parallel so bestseller ranking
-    // is based on real sales data rather than arbitrary list order.
-    Promise.all([api.listProducts(), api.listOrders()])
-      .then(([p, o]) => { setProducts(p); setOrders(o); })
+    api.listProducts()
+      .then(setProducts)
       .catch((e) => setError(e.message));
+    api.listOrders()
+      .then(setOrders)
+      .catch(() => { /* ranking falls back to list order if history is unavailable */ });
   }, []);
 
   const categoryCounts = CATEGORY_META.map((c) => ({
@@ -41,7 +42,7 @@ export default function HomePage() {
     orders
       .filter((o) => o.status === 'PAID')
       .forEach((o) => {
-        o.items.forEach((item) => {
+        (o.items || []).forEach((item) => {
           soldMap[item.productId] = (soldMap[item.productId] || 0) + item.quantity;
         });
       });
