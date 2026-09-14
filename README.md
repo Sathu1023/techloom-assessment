@@ -173,6 +173,3 @@ The store is preloaded with **18 books** (3 in each category: Fiction, Non-Ficti
 
 The UI follows the attached BookNest design system (deep green `#0F5132` primary, soft mint accents, Inter typeface) across both the staff POS dashboard and the customer storefront — see the design mockup provided with this assessment for the full page-by-page reference.
 
-## Optional: Demo Walkthrough
-
-`<PASTE A LOOM/YOUTUBE LINK HERE IF YOU RECORD ONE>`
