@@ -23,10 +23,15 @@ export default function BookCover({ imageUrl, category, alt, size = 'normal', cl
           src={imageUrl}
           alt={alt || category || 'Product'}
           loading="lazy"
+          referrerPolicy="no-referrer"
           onError={(e) => {
-            e.currentTarget.style.display = 'none';
-            e.currentTarget.parentElement.classList.add('img-fallback');
-            e.currentTarget.parentElement.textContent = icon;
+            const img = e.currentTarget;
+            const parent = img.parentElement;
+            if (!parent) return;
+            img.remove();
+            parent.classList.remove('has-image');
+            parent.classList.add('img-fallback');
+            parent.textContent = icon;
           }}
         />
       </div>

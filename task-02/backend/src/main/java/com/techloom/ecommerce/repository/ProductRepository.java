@@ -11,6 +11,8 @@ import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+    Optional<Product> findFirstByName(String name);
+
     /**
      * Storefront search/filter: case-insensitive name match, optional category,
      * optional price range. Availability (in-stock only) is filtered in-memory
@@ -19,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("""
         select p from Product p
         where (:q is null or lower(p.name) like lower(concat('%', :q, '%')))
-          and (:category is null or p.category = :category)
+          and (:category is null or lower(p.category) = lower(:category))
           and (:minPrice is null or p.price >= :minPrice)
           and (:maxPrice is null or p.price <= :maxPrice)
         """)

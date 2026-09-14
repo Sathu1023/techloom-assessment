@@ -9,6 +9,8 @@ const CATEGORY_META = [
   { name: 'Non-Fiction', icon: '📘' },
   { name: 'Technology', icon: '💻' },
   { name: "Children's", icon: '🧸' },
+  { name: 'Self-Development', icon: '🌱' },
+  { name: 'Business', icon: '📊' },
 ];
 
 export default function HomePage() {
@@ -29,7 +31,7 @@ export default function HomePage() {
 
   const categoryCounts = CATEGORY_META.map((c) => ({
     ...c,
-    count: products.filter((p) => p.category === c.name).length,
+    count: products.filter((p) => (p.category || '').toLowerCase() === c.name.toLowerCase()).length,
   }));
 
   // Build a sold-units map from PAID orders, then sort products by units sold
