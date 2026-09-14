@@ -5,7 +5,7 @@
 
 **Live Deployments:**
 - Task 01 (POS Order & Inventory System): https://techloom-assessment-production-1837.up.railway.app
-- Task 02 (E-Commerce Checkout & Payment System): `<PASTE_TASK_02_DEPLOYMENT_URL_HERE>`
+- Task 02 (E-Commerce Checkout & Payment System): https://techloom-assessment-production-bd2b.up.railway.app
 
 ---
 
