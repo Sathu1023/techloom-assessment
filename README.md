@@ -56,7 +56,7 @@ mvn spring-boot:run
 Environment variables (all have working local defaults):
 | Var | Default |
 |---|---|
-| `DB_URL` | `jdbc:mysql://localhost:3307/pos_db` |
+| `DB_URL` | `jdbc:mysql://localhost:3306/pos_db` |
 | `DB_USERNAME` | `root` |
 | `DB_PASSWORD` | `` |
 | `PORT` | `8080` |
@@ -117,9 +117,11 @@ Use GitHub **Sathu1023** / email **sathurshika1023@gmail.com** on [railway.app](
 Same as above, but Root Directory = `task-02`, link MySQL = `ecommerce-mysql`, then **Generate Domain**.
 
 ### After deploy
-1. Open each public URL — you should see BookNest UI and seeded books.
-2. Health check: `https://YOUR-DOMAIN/health` → `{"status":"ok"}`
-3. Paste both URLs into the **Live Deployments** section at the top of this README.
+1. Open the public URLs at the top of this README — Task 02 should show BookNest with **6 categories × 3 books** and cover images.
+2. Health checks:
+   - Task 01: https://techloom-assessment-production-1837.up.railway.app/health → `{"status":"ok"}`
+   - Task 02: https://techloom-assessment-production-bd2b.up.railway.app/health → `{"status":"ok"}`
+3. On Task 02 startup the seeder upserts the catalog (adds missing titles and cover URLs even if older rows already exist). Look for `BookNest seeder: catalog ready` in the service logs.
 
 ### Why deploy usually crashes (and how this repo avoids it)
 | Crash cause | Fix in this repo / on Railway |
@@ -157,7 +159,9 @@ wait
 ```
 
 ### Task 02 — E-Commerce Storefront
-1. **Discovery** — use the search bar and category/price filters on the homepage; results update via `GET /api/products/search`.
+The store is preloaded with **18 books** (3 in each category: Fiction, Non-Fiction, Technology, Children's, Self-Development, Business), each with a cover.
+
+1. **Discovery** — on the homepage, each category should show **3 books**. Use search and category/price filters; results update via `GET /api/products/search`. Book covers load from `/covers/*.svg`.
 2. **Cart & checkout** — add items to cart, go to checkout, click "Reserve Stock & Continue to Payment".
 3. **Mock payment / duplicate protection** — same as Task 01: pick Success/Failure/Timeout; duplicate submissions for the same order are rejected.
 4. **Refunds & cancellation** — from *Order History*, cancel a `RESERVED` order (plain stock release) or a `PAID` order (issues a simulated refund via `POST /api/orders/{id}/refund`, restocks items, and returns a refund reference).
